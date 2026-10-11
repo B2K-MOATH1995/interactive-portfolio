@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moath Aldalati | .NET Developer & CS Student</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    /* ============================================================
+       RESET & ROOT
+    ============================================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:         #080b14;
+      --bg-2:       #0d1120;
+      --surface:    rgba(255,255,255,0.04);
+      --border:     rgba(255,255,255,0.08);
+      --accent:     #6c63ff;
+      --accent-2:   #00d4ff;
+      --accent-3:   #ff6584;
+      --gold:       #ffd166;
+      --text:       #e8eaf0;
+      --muted:      #8a90af;
+      --card-bg:    rgba(13,17,32,0.72);
+      --radius:     16px;
+      --radius-sm:  8px;
+      --glow:       0 0 40px rgba(108,99,255,0.18);
+      --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* animated background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(108,99,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(108,99,255,0.035) 1px, transparent 1px);
+      background-size: 55px 55px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+    .orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, #6c63ff, transparent); top: -200px; right: -150px; }
+    .orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, #00d4ff, transparent); bottom: 10%; left: -150px; }
+    .orb-3 { width: 450px; height: 450px; background: radial-gradient(circle, #ff6584, transparent); top: 50%; right: 5%; opacity: 0.2; }
+
+    /* ============================================================
+       SCROLLBAR
+    ============================================================ */
+    ::-webkit-scrollbar { width: 7px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
+
+    /* ============================================================
+       TYPOGRAPHY HELPERS
+    ============================================================ */
+    .section-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-size: clamp(1.85rem, 4vw, 2.85rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 30%, var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      max-width: 580px;
+      font-size: 1rem;
+    }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    section { position: relative; z-index: 1; padding: 100px 0; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 18px 0;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(8,11,20,0.75);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    nav.scrolled { padding: 12px 0; box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+    .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo {
+      font-family: 'Fira Code', monospace;
+      font-weight: 600;
+      font-size: 1.15rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent-2); }
+
+    .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.25s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff !important;
+      padding: 9px 20px;
+      border-radius: 50px;
+      font-size: 0.85rem !important;
+      text-decoration: none;
+      transition: var(--transition);
+      font-weight: 600 !important;
+      box-shadow: 0 4px 15px rgba(108,99,255,0.3);
+    }
+    .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,212,255,0.4); }
+    .nav-btn::after { display: none !important; }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: var(--transition); }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 90px;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.25fr 0.85fr; align-items: center; gap: 60px; }
+    .hero-eyebrow {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: var(--accent-2);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-eyebrow::before { content: '// '; color: var(--muted); }
+
+    .hero-name {
+      font-size: clamp(2.4rem, 6vw, 4.4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .hero-name .first { color: #fff; }
+    .hero-name .last { background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    .hero-role {
+      font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+      color: var(--muted);
+      margin-bottom: 22px;
+      font-weight: 400;
+      min-height: 2em;
+    }
+    .typed-cursor { color: var(--accent-2); animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-bio {
+      font-size: 1.02rem;
+      color: var(--muted);
+      max-width: 540px;
+      margin-bottom: 34px;
+      line-height: 1.8;
+    }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 13px 26px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      text-decoration: none;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(108,99,255,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(108,99,255,0.6); }
+
+    .btn-outline {
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+    }
+    .btn-outline:hover { border-color: var(--accent-2); color: var(--accent-2); transform: translateY(-2px); }
+
+    .hero-socials { margin-top: 36px; display: flex; gap: 14px; }
+    .hero-socials a {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 1.05rem;
+      transition: var(--transition);
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+    }
+    .hero-socials a:hover { border-color: var(--accent-2); color: var(--accent-2); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,212,255,0.25); }
+
+    /* profile avatar */
+    .hero-avatar-wrap {
+      position: relative;
+      width: 310px; height: 310px;
+      margin: 0 auto;
+    }
+    .hero-avatar-ring {
+      position: absolute; inset: -5px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--accent-3), var(--gold), var(--accent));
+      animation: spin 9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hero-avatar-inner {
+      position: absolute; inset: 4px;
+      border-radius: 50%;
+      background: var(--bg-2);
+      overflow: hidden;
+      box-shadow: inset 0 0 25px rgba(0,0,0,0.8);
+    }
+    .hero-avatar-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .hero-avatar-inner:hover img {
+      transform: scale(1.05);
+    }
+
+    /* floating badges */
+    .hero-badge {
+      position: absolute;
+      background: rgba(13,17,32,0.85);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      animation: float 4s ease-in-out infinite;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .hero-badge.b1 { top: 10px; right: -30px; color: var(--accent-2); animation-delay: 0s; }
+    .hero-badge.b2 { bottom: 25px; left: -40px; color: var(--accent); animation-delay: 1.5s; }
+    .hero-badge.b3 { top: 52%; right: -55px; transform: translateY(-50%); color: var(--gold); animation-delay: 0.8s; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .hero-badge.b3 { animation: float3 4s ease-in-out 0.8s infinite; }
+    @keyframes float3 { 0%,100%{transform:translateY(-50%)} 50%{transform:translateY(calc(-50% - 8px))} }
+
+    /* hero stats */
+    .hero-stats {
+      display: flex;
+      gap: 36px;
+      margin-top: 36px;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: left; }
+    .stat-number {
+      font-size: 1.85rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label { font-size: 0.76rem; color: var(--muted); font-weight: 500; }
+
+    /* ============================================================
+       ABOUT
+    ============================================================ */
+    #about { background: var(--bg-2); }
+    .about-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 50px; align-items: start; }
+    .about-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 34px;
+      backdrop-filter: blur(20px);
+    }
+    .about-card p { color: var(--muted); font-size: 0.98rem; line-height: 1.85; margin-bottom: 16px; }
+    .about-card p:last-child { margin-bottom: 0; }
+    .highlight { color: var(--accent-2); font-weight: 600; }
+
+    .info-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .info-list li {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 12px 18px;
+      border-radius: 12px;
+      transition: var(--transition);
+    }
+    .info-list li:hover { border-color: rgba(108,99,255,0.3); transform: translateX(3px); }
+    .info-icon {
+      width: 38px; height: 38px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(108,99,255,0.15), rgba(0,212,255,0.1));
+      border: 1px solid rgba(108,99,255,0.2);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent-2);
+      font-size: 0.95rem;
+    }
+    .info-label { font-weight: 600; color: var(--text); font-size: 0.8rem; display: block; }
+    .info-val { color: var(--muted); font-size: 0.9rem; text-decoration: none; }
+
+    /* ============================================================
+       HONORS & ACHIEVEMENTS BANNER
+    ============================================================ */
+    .award-card {
+      background: linear-gradient(135deg, rgba(255,209,102,0.06), rgba(108,99,255,0.08));
+      border: 1px solid rgba(255,209,102,0.25);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-top: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .award-icon {
+      width: 64px; height: 64px; flex-shrink: 0;
+      background: rgba(255,209,102,0.12);
+      border: 1px solid rgba(255,209,102,0.3);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.9rem;
+      color: var(--gold);
+    }
+    .award-title { font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .award-badge {
+      background: rgba(255,209,102,0.15);
+      border: 1px solid rgba(255,209,102,0.4);
+      color: var(--gold);
+      font-size: 0.72rem;
+      font-family: 'Fira Code', monospace;
+      padding: 2px 10px;
+      border-radius: 50px;
+    }
+    .award-sub { color: var(--accent-2); font-size: 0.88rem; font-weight: 500; margin-bottom: 6px; }
+    .award-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+    /* ============================================================
+       SKILLS
+    ============================================================ */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; margin-top: 50px; }
+    .skill-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      backdrop-filter: blur(20px);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--grad);
+    }
+    .skill-card:hover { transform: translateY(-4px); border-color: rgba(108,99,255,0.35); box-shadow: var(--glow); }
+    .skill-card-icon {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 14px;
+      background: var(--icon-bg);
+    }
+    .skill-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 14px; color: var(--text); }
+    .tags { display: flex; flex-wrap: wrap; gap: 7px; }
+    .tag {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.74rem;
+      padding: 4px 11px;
+      border-radius: 50px;
+      background: rgba(108,99,255,0.1);
+      border: 1px solid rgba(108,99,255,0.22);
+      color: var(--accent-2);
+      transition: 0.2s;
+    }
+    .tag:hover { background: rgba(108,99,255,0.22); border-color: var(--accent-2); }
+
+    /* ============================================================
+       PROJECTS
+    ============================================================ */
+    #projects { background: var(--bg-2); }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 26px; margin-top: 50px; }
+    .project-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover { transform: translateY(-6px); border-color: rgba(108,99,255,0.35); box-shadow: 0 20px 50px rgba(0,0,0,0.5), var(--glow); }
+
+    .project-banner {
+      height: 155px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 55%, var(--card-bg));
+    }
+
+    .badge-pill {
+      position: absolute;
+      bottom: 12px; right: 12px;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 2;
+    }
+    .video-badge { background: rgba(255,101,132,0.92); color: #fff; }
+    .progress-badge { background: rgba(255,170,0,0.92); color: #fff; }
+    .live-badge { background: rgba(0,200,120,0.92); color: #fff; }
+
+    .project-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .project-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .project-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.75; flex: 1; margin-bottom: 18px; }
+    .project-bullets {
+      list-style: none;
+      margin-bottom: 18px;
+      padding-left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .project-bullets li {
+      font-size: 0.82rem;
+      color: #b5bbd2;
+      position: relative;
+      padding-left: 16px;
+      line-height: 1.6;
+    }
+    .project-bullets li::before {
+      content: '▹';
+      position: absolute;
+      left: 0;
+      color: var(--accent-2);
+    }
+    .project-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+    .tech-pill {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      border-radius: 50px;
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.22);
+      color: var(--accent-2);
+    }
+    .project-links { display: flex; gap: 12px; }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 7px 16px;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      background: var(--surface);
+    }
+    .project-link:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
+    .project-link.video { border-color: rgba(255,101,132,0.35); color: var(--accent-3); }
+    .project-link.video:hover { border-color: var(--accent-3); background: rgba(255,101,132,0.12); }
+
+    /* featured project (full width) */
+    .project-card.featured { grid-column: 1 / -1; flex-direction: row; }
+    .project-card.featured .project-banner { width: 300px; height: auto; flex-shrink: 0; font-size: 5rem; }
+    .project-card.featured .project-body { padding: 32px; }
+    .project-card.featured .project-title { font-size: 1.3rem; }
+    .project-card.featured .project-desc { font-size: 0.94rem; }
+
+    /* ============================================================
+       EXPERIENCE & LEADERSHIP
+    ============================================================ */
+    .timeline { position: relative; padding-left: 32px; margin-top: 50px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 8px; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent-2), transparent);
+    }
+    .timeline-item { position: relative; margin-bottom: 40px; }
+    .timeline-dot {
+      position: absolute;
+      left: -39px; top: 8px;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 10px rgba(108,99,255,0.7);
+    }
+    .timeline-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      backdrop-filter: blur(20px);
+      transition: var(--transition);
+    }
+    .timeline-card:hover { border-color: rgba(108,99,255,0.3); transform: translateX(4px); }
+    .timeline-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 6px; flex-wrap: wrap; }
+    .timeline-role { font-size: 1.02rem; font-weight: 700; color: var(--text); }
+    .timeline-year {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      background: rgba(108,99,255,0.1);
+      border: 1px solid rgba(108,99,255,0.22);
+      padding: 3px 12px;
+      border-radius: 50px;
+      white-space: nowrap;
+    }
+    .timeline-org { font-size: 0.88rem; color: var(--accent-2); margin-bottom: 12px; font-weight: 500; }
+    .timeline-bullets {
+      list-style: none;
+      padding-left: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .timeline-bullets li {
+      font-size: 0.88rem;
+      color: var(--muted);
+      position: relative;
+      padding-left: 18px;
+      line-height: 1.7;
+    }
+    .timeline-bullets li::before {
+      content: '▹';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* ============================================================
+       CERTIFICATIONS & DEVELOPMENT
+    ============================================================ */
+    #certifications { background: var(--bg-2); }
+    .cert-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 40px; }
+    .cert-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      backdrop-filter: blur(20px);
+      transition: var(--transition);
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .cert-card:hover { border-color: rgba(0,212,255,0.3); transform: translateY(-3px); }
+    .cert-icon {
+      width: 48px; height: 48px; flex-shrink: 0;
+      border-radius: 12px;
+      background: rgba(0,212,255,0.1);
+      border: 1px solid rgba(0,212,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem;
+      color: var(--accent-2);
+    }
+    .cert-title { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .cert-issuer { font-size: 0.82rem; color: var(--accent); margin-bottom: 8px; font-weight: 500; }
+    .cert-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.65; }
+
+    /* ============================================================
+       EDUCATION
+    ============================================================ */
+    .edu-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      max-width: 760px;
+      margin-top: 40px;
+      transition: var(--transition);
+    }
+    .edu-card:hover { border-color: rgba(108,99,255,0.3); transform: translateY(-3px); box-shadow: var(--glow); }
+    .edu-icon {
+      width: 72px; height: 72px; flex-shrink: 0;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(0,212,255,0.15));
+      border: 1px solid rgba(108,99,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+    }
+    .edu-degree { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+    .edu-inst { color: var(--accent-2); font-size: 0.92rem; font-weight: 500; margin-bottom: 10px; }
+    .edu-badge-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .edu-badge {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      background: rgba(108,99,255,0.1);
+      border: 1px solid rgba(108,99,255,0.2);
+      padding: 3px 12px;
+      border-radius: 50px;
+      display: inline-block;
+    }
+
+    /* ============================================================
+       CONTACT
+    ============================================================ */
+    #contact { text-align: center; background: var(--bg-2); }
+    .contact-wrapper {
+      max-width: 680px;
+      margin: 50px auto 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px;
+      backdrop-filter: blur(20px);
+    }
+    .contact-email {
+      font-family: 'Fira Code', monospace;
+      font-size: 1.05rem;
+      color: var(--accent-2);
+      text-decoration: none;
+      display: inline-block;
+      margin: 20px 0 28px;
+      padding: 12px 28px;
+      border: 1px solid rgba(0,212,255,0.25);
+      border-radius: 50px;
+      transition: var(--transition);
+      background: rgba(0,212,255,0.03);
+    }
+    .contact-email:hover { background: rgba(0,212,255,0.1); border-color: var(--accent-2); transform: scale(1.02); }
+    .contact-socials { display: flex; justify-content: center; gap: 16px; margin-top: 28px; }
+    .contact-socials a {
+      width: 50px; height: 50px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: var(--transition);
+      background: var(--surface);
+    }
+    .contact-socials a:hover { border-color: var(--accent-2); color: var(--accent-2); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,212,255,0.25); }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 36px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    footer span { color: var(--accent); }
+
+    /* ============================================================
+       MOBILE
+    ============================================================ */
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-avatar-wrap { margin: 0 auto; order: -1; width: 260px; height: 260px; }
+      .hero-actions { justify-content: center; }
+      .hero-socials { justify-content: center; }
+      .hero-stats { justify-content: center; }
+      .hero-badge.b1, .hero-badge.b2, .hero-badge.b3 { display: none; }
+      .about-grid { grid-template-columns: 1fr; }
+      .project-card.featured { flex-direction: column; grid-column: auto; }
+      .project-card.featured .project-banner { width: 100%; height: 160px; }
+    }
+    @media (max-width: 700px) {
+      .nav-links { display: none; position: fixed; top: 65px; left: 0; right: 0; background: rgba(8,11,20,0.98); flex-direction: column; padding: 24px; gap: 16px; border-bottom: 1px solid var(--border); backdrop-filter: blur(20px); }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .edu-card { flex-direction: column; text-align: center; }
+      .award-card { flex-direction: column; text-align: center; }
+      .contact-wrapper { padding: 32px 20px; }
+      section { padding: 75px 0; }
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- ============================================================
+       NAV
+  ============================================================ -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#hero">moath<span>.</span>dev</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#experience">Leadership</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a class="nav-btn" href="resume.pdf" download><i class="fas fa-file-pdf"></i> Resume</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <p class="hero-eyebrow">Riyadh, Saudi Arabia</p>
+          <h1 class="hero-name">
+            <span class="first">Moath </span><br />
+            <span class="last">Aldalati</span>
+          </h1>
+          <p class="hero-role">
+            <span id="typed"></span><span class="typed-cursor">|</span>
+          </p>
+          <p class="hero-bio">
+            Computer Science student and .NET developer specializing in multi-tier architecture,
+            relational database design, and algorithmic problem solving. Passionate about engineering
+            robust desktop applications and leading university technical tracks.
+          </p>
+          <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary"><i class="fas fa-code"></i> View Projects</a>
+            <a href="resume.pdf" download class="btn btn-outline"><i class="fas fa-file-pdf"></i> Download CV</a>
+          </div>
+          <div class="hero-socials">
+            <a href="https://github.com/B2K-MOATH1995" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://linkedin.com/in/moath-aldalati" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="mailto:mo3.red1995@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+            <a href="tel:+966562702645" aria-label="Phone"><i class="fas fa-phone"></i></a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-number">2nd</div>
+              <div class="stat-label">Algo Arena Contest</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">18+</div>
+              <div class="stat-label">Roadmaps Completed</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">5+</div>
+              <div class="stat-label">Technical Projects</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avatar -->
+        <div class="hero-avatar-wrap">
+          <div class="hero-avatar-ring"></div>
+          <div class="hero-avatar-inner">
+            <img src="profile.jpg" alt="Moath Aldalati" />
+          </div>
+          <div class="hero-badge b1"><i class="fab fa-microsoft"></i> .NET & C#</div>
+          <div class="hero-badge b2"><i class="fas fa-database"></i> SQL Server</div>
+          <div class="hero-badge b3"><i class="fas fa-trophy"></i> 2nd Place Algo Arena</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT & HONORS
+  ============================================================ -->
+  <section id="about">
+    <div class="container">
+      <div class="fade-up">
+        <p class="section-label">01. About Me</p>
+        <h2 class="section-title">Background & Problem Solving</h2>
+      </div>
+      <div class="about-grid fade-up">
+        <div class="about-card">
+          <p>
+            I am a third-year <span class="highlight">Computer Science student</span> at Imam Mohammad Ibn Saud Islamic University (Expected Graduation: 2027),
+            focusing on software engineering and multi-tier desktop architecture with <span class="highlight">C# and the .NET Framework</span>.
+          </p>
+          <p>
+            My engineering foundation is built on deep problem solving, database normalization, and clean architecture — cleanly decoupling Presentation, Business Logic, and Data Access Layers.
+            In addition to software engineering, I actively compete in algorithmic programming and hold a strong background in data structures and complexity analysis.
+          </p>
+          <p>
+            Beyond coding, I lead the <span class="highlight">Technical Challenges Committee</span> at the Robotics & Wireless Sports Club,
+            organize campus hackathons, and assist students as an Applied Physics peer tutor.
+          </p>
+        </div>
+
+        <ul class="info-list">
+          <li>
+            <div class="info-icon"><i class="fas fa-university"></i></div>
+            <div>
+              <span class="info-label">University</span>
+              <span class="info-val">Imam Mohammad Ibn Saud Islamic University</span>
+            </div>
+          </li>
+          <li>
+            <div class="info-icon"><i class="fas fa-map-pin"></i></div>
+            <div>
+              <span class="info-label">Location</span>
+              <span class="info-val">Riyadh, Saudi Arabia</span>
+            </div>
+          </li>
+          <li>
+            <div class="info-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <span class="info-label">Email</span>
+              <a href="mailto:mo3.red1995@gmail.com" class="info-val" style="color:var(--accent-2);">mo3.red1995@gmail.com</a>
+            </div>
+          </li>
+          <li>
+            <div class="info-icon"><i class="fas fa-phone"></i></div>
+            <div>
+              <span class="info-label">Phone</span>
+              <a href="tel:+966562702645" class="info-val" style="color:var(--accent-2);">+966 56 270 2645</a>
+            </div>
+          </li>
+          <li>
+            <div class="info-icon"><i class="fab fa-linkedin-in"></i></div>
+            <div>
+              <span class="info-label">LinkedIn</span>
+              <a href="https://linkedin.com/in/moath-aldalati" target="_blank" class="info-val" style="color:var(--accent-2);">moath-aldalati</a>
+            </div>
+          </li>
+          <li>
+            <div class="info-icon"><i class="fab fa-github"></i></div>
+            <div>
+              <span class="info-label">GitHub</span>
+              <a href="https://github.com/B2K-MOATH1995" target="_blank" class="info-val" style="color:var(--accent-2);">B2K-MOATH1995</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Honors & Competitions Highlight -->
+      <div class="award-card fade-up">
+        <div class="award-icon"><i class="fas fa-trophy"></i></div>
+        <div>
+          <div class="award-title">
+            2nd Place — Algo Arena Competitive Programming Contest
+            <span class="award-badge">Honor Award</span>
+          </div>
+          <p class="award-sub">Algorithmic Problem Solving & Data Structures Contest | Imam University, Riyadh</p>
+          <p class="award-desc">
+            Awarded 2nd place among university participants for solving complex algorithmic and mathematical problems under strict time and memory limits. Applied optimal data structures, dynamic programming, graph traversal, and complexity optimization techniques.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SKILLS
+  ============================================================ -->
+  <section id="skills">
+    <div class="container">
+      <div class="fade-up">
+        <p class="section-label">02. Expertise</p>
+        <h2 class="section-title">Technical Skills</h2>
+        <p class="section-sub">My technical foundation and engineering tools.</p>
+      </div>
+      <div class="skills-grid">
+
+        <div class="skill-card fade-up" style="--grad:linear-gradient(90deg,#6c63ff,#00d4ff); --icon-bg:rgba(108,99,255,0.15);">
+          <div class="skill-card-icon">💻</div>
+          <h3>Languages</h3>
+          <div class="tags">
+            <span class="tag">C#</span>
+            <span class="tag">C++</span>
+            <span class="tag">SQL (T-SQL)</span>
+            <span class="tag">Java</span>
+            <span class="tag">MIPS Assembly</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-up" style="--grad:linear-gradient(90deg,#00d4ff,#6c63ff); --icon-bg:rgba(0,212,255,0.12);">
+          <div class="skill-card-icon">🖥️</div>
+          <h3>Frameworks & Libraries</h3>
+          <div class="tags">
+            <span class="tag">.NET Framework</span>
+            <span class="tag">Windows Forms</span>
+            <span class="tag">ADO.NET</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-up" style="--grad:linear-gradient(90deg,#ff6584,#6c63ff); --icon-bg:rgba(255,101,132,0.12);">
+          <div class="skill-card-icon">🗄️</div>
+          <h3>Tools & Databases</h3>
+          <div class="tags">
+            <span class="tag">Microsoft SQL Server</span>
+            <span class="tag">SSMS</span>
+            <span class="tag">Visual Studio</span>
+            <span class="tag">Git / GitHub</span>
+            <span class="tag">ERDPlus</span>
+            <span class="tag">LaTeX</span>
+          </div>
+        </div>
+
+        <div class="skill-card fade-up" style="--grad:linear-gradient(90deg,#ffd166,#6c63ff); --icon-bg:rgba(255,209,102,0.15);">
+          <div class="skill-card-icon">🧠</div>
+          <h3>Core Concepts</h3>
+          <div class="tags">
+            <span class="tag">Multi-Tier Architecture</span>
+            <span class="tag">Relational Database Design</span>
+            <span class="tag">OOP Paradigms</span>
+            <span class="tag">Competitive Programming</span>
+            <span class="tag">Algorithm Complexity</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PROJECTS
+  ============================================================ -->
+  <section id="projects">
+    <div class="container">
+      <div class="fade-up">
+        <p class="section-label">03. Portfolio</p>
+        <h2 class="section-title">Technical Projects</h2>
+        <p class="section-sub">Production-grade desktop software, competitive implementations, and interactive tools.</p>
+      </div>
+      <div class="projects-grid">
+
+        <!-- DVLD — Featured (full width) -->
+        <div class="project-card featured fade-up">
+          <div class="project-banner" style="background:linear-gradient(135deg,#0d1120,#1a0a2e);">
+            🪪
+            <span class="badge-pill progress-badge"><i class="fas fa-spinner fa-spin"></i> In Progress</span>
+          </div>
+          <div class="project-body">
+            <p class="project-title">🚗 Driving & Vehicle License Department (DVLD) System</p>
+            <p class="project-desc">
+              An enterprise-grade, multi-tier desktop licensing management system engineered with clean layer separation and hardened security controls.
+            </p>
+            <ul class="project-bullets">
+              <li>Architected using <strong>C#</strong> and <strong>.NET Framework</strong>, cleanly decoupling Presentation Layer, Business Logic Layer (BLL), and Data Access Layer (DAL) via <strong>ADO.NET</strong>.</li>
+              <li>Designed a normalized <strong>SQL Server</strong> database enforcing strict relational integrity across drivers, licenses, test appointments, and fee structures.</li>
+              <li>Implemented lifecycle workflows: appointment booking, test evaluations, license issuance, renewal, and detention/release with fine settlement.</li>
+              <li>Engineered <strong>Role-Based Access Control (RBAC)</strong>, secure password hashing, comprehensive audit logs, parameterized queries, and stored procedures.</li>
+            </ul>
+            <div class="project-tech">
+              <span class="tech-pill">C#</span>
+              <span class="tech-pill">.NET</span>
+              <span class="tech-pill">SQL Server (SSMS)</span>
+              <span class="tech-pill">ADO.NET</span>
+              <span class="tech-pill">Windows Forms</span>
+              <span class="tech-pill">Multi-Tier</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/B2K-MOATH1995/DVLD_PresentationLayer" target="_blank" class="project-link"><i class="fab fa-github"></i> GitHub Presentation Layer</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- TypeRacer -->
+        <div class="project-card fade-up">
+          <div class="project-banner" style="background:linear-gradient(135deg,#0a0d1a,#100a2e);">
+            ⌨️
+            <span class="badge-pill video-badge"><i class="fas fa-play"></i> Video Demo</span>
+          </div>
+          <div class="project-body">
+            <p class="project-title">Interactive Typing Speed Assessment (TypeRacer Mock)</p>
+            <p class="project-desc">
+              Desktop application engineered to track and measure real-time typing speed, accuracy, and key stroke latency.
+            </p>
+            <ul class="project-bullets">
+              <li>Implemented low-level key listeners, custom keyboard event handling, and real-time WPM calculation algorithms.</li>
+              <li>Utilized dictionary data structures and custom shortcut key bindings for maximum responsiveness.</li>
+            </ul>
+            <div class="project-tech">
+              <span class="tech-pill">C#</span>
+              <span class="tech-pill">Windows Forms</span>
+              <span class="tech-pill">Event Handling</span>
+            </div>
+            <div class="project-links">
+              <a href="https://lnkd.in/p/dY85Y4h5" target="_blank" class="project-link video"><i class="fab fa-linkedin"></i> Watch Demo</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Algorithmic Implementations & Data Structures -->
+        <div class="project-card fade-up">
+          <div class="project-banner" style="background:linear-gradient(135deg,#0d1f1c,#0a2e22);">
+            ⚡
+            <span class="badge-pill live-badge"><i class="fas fa-terminal"></i> Core Repo</span>
+          </div>
+          <div class="project-body">
+            <p class="project-title">Algorithmic Implementations & Data Structures</p>
+            <p class="project-desc">
+              Academic & competitive programming repository covering fundamental computer science data structures and advanced algorithms.
+            </p>
+            <ul class="project-bullets">
+              <li>Implemented core data structures (Trees, Graphs, Queues, Hash Tables) applying OOP paradigms.</li>
+              <li>Engineered dynamic programming, graph search (BFS/DFS), and sorting routines with rigorous time/space complexity analysis.</li>
+            </ul>
+            <div class="project-tech">
+              <span class="tech-pill">C++</span>
+              <span class="tech-pill">Algorithms</span>
+              <span class="tech-pill">Data Structures</span>
+              <span class="tech-pill">OOP</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/B2K-MOATH1995" target="_blank" class="project-link"><i class="fab fa-github"></i> Profile Repos</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rock-Paper-Scissors -->
+        <div class="project-card fade-up">
+          <div class="project-banner" style="background:linear-gradient(135deg,#0a1a0d,#0d2010);">
+            ✂️
+            <span class="badge-pill live-badge"><i class="fas fa-circle"></i> Live Code</span>
+          </div>
+          <div class="project-body">
+            <p class="project-title">Rock-Paper-Scissors Game</p>
+            <p class="project-desc">
+              Feature-rich desktop game with custom PNG graphics, randomized move generation, and continuous session score tracking.
+            </p>
+            <div class="project-tech">
+              <span class="tech-pill">C#</span>
+              <span class="tech-pill">Windows Forms</span>
+              <span class="tech-pill">UI Design</span>
+            </div>
+            <div class="project-links">
+              <a href="https://github.com/B2K-MOATH1995/Rock-Paper-Scissors" target="_blank" class="project-link"><i class="fab fa-github"></i> GitHub Repo</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tic-Tac-Toe -->
+        <div class="project-card fade-up">
+          <div class="project-banner" style="background:linear-gradient(135deg,#1a0d0a,#2e150a);">
+            ⭕
+            <span class="badge-pill video-badge"><i class="fas fa-play"></i> Video Demo</span>
+          </div>
+          <div class="project-body">
+            <p class="project-title">Tic-Tac-Toe Game</p>
+            <p class="project-desc">
+              Interactive desktop game featuring custom UI styling and robust turn/win state validation logic.
+            </p>
+            <div class="project-tech">
+              <span class="tech-pill">C#</span>
+              <span class="tech-pill">Windows Forms</span>
+            </div>
+            <div class="project-links">
+              <a href="https://lnkd.in/p/ddV8d7QR" target="_blank" class="project-link video"><i class="fab fa-linkedin"></i> Watch Demo</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pizza Project -->
+        <div class="project-card fade-up">
+          <div class="project-banner" style="background:linear-gradient(135deg,#1a0a0a,#2e1010);">
+            🍕
+            <span class="badge-pill video-badge"><i class="fas fa-play"></i> Video Demo</span>
+          </div>
+          <div class="project-body">
+            <p class="project-title">Pizza Order Application</p>
+            <p class="project-desc">
+              Interactive desktop application demonstrating custom form controls, dynamic pricing calculations, and user interface state management.
+            </p>
+            <div class="project-tech">
+              <span class="tech-pill">C#</span>
+              <span class="tech-pill">Windows Forms</span>
+            </div>
+            <div class="project-links">
+              <a href="https://lnkd.in/p/d5JiQNAH" target="_blank" class="project-link video"><i class="fab fa-linkedin"></i> Watch Demo</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       LEADERSHIP & ENGAGEMENT
+  ============================================================ -->
+  <section id="experience">
+    <div class="container">
+      <div class="fade-up">
+        <p class="section-label">04. Leadership</p>
+        <h2 class="section-title">Campus & Community Engagement</h2>
+        <p class="section-sub">Guiding technical initiatives, tutoring, and organizing practical hackathons.</p>
+      </div>
+      <div class="timeline fade-up">
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <p class="timeline-role">Leader — Technical Challenges Committee</p>
+              <span class="timeline-year">2025 – Present</span>
+            </div>
+            <p class="timeline-org">🤖 Robotics and Wireless Sports Club (RRC) | Imam University</p>
+            <ul class="timeline-bullets">
+              <li>Lead the planning and execution of competitive technical challenges, problem sets, and practical hackathons.</li>
+              <li>Coordinate technical workshop tracks, organize problem sets, and evaluate student project submissions.</li>
+              <li>Organized drone/RC telemetry events and university-level technical competitions.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <p class="timeline-role">Head of Technical Support</p>
+              <span class="timeline-year">2025</span>
+            </div>
+            <p class="timeline-org">💻 VTECH Bootcamp / Workshop | Imam University</p>
+            <ul class="timeline-bullets">
+              <li>Supervised technical operations, resolving environment setup, tool configuration, and database connectivity issues.</li>
+              <li>Ensured technical readiness and zero operational downtime across all practical hands-on sessions.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <p class="timeline-role">Applied Physics Peer Tutor</p>
+              <span class="timeline-year">2026</span>
+            </div>
+            <p class="timeline-org">🎓 Imam Mohammad Ibn Saud Islamic University</p>
+            <ul class="timeline-bullets">
+              <li>Developed instructional materials, exercise problem sets, and structured LaTeX study guides.</li>
+              <li>Facilitated peer understanding in applied mathematical physics and analytical problem solving.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CERTIFICATIONS & PROFESSIONAL DEVELOPMENT
+  ============================================================ -->
+  <section id="certifications">
+    <div class="container">
+      <div class="fade-up">
+        <p class="section-label">05. Continuous Learning</p>
+        <h2 class="section-title">Certifications & Roadmaps</h2>
+        <p class="section-sub">Completed rigorous technical tracks and industry engagement.</p>
+      </div>
+      <div class="cert-grid fade-up">
+
+        <div class="cert-card">
+          <div class="cert-icon"><i class="fas fa-layer-group"></i></div>
+          <div>
+            <p class="cert-title">Software & Database Development Roadmaps</p>
+            <p class="cert-issuer">ProgrammingAdvices</p>
+            <p class="cert-desc">
+              Completed <strong>18+ intensive roadmaps</strong> covering C++ Foundations, Object-Oriented Programming, Advanced Data Structures, and SQL Server Enterprise Practices.
+            </p>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-icon"><i class="fas fa-chart-line"></i></div>
+          <div>
+            <p class="cert-title">Data Science Foundation</p>
+            <p class="cert-issuer">Satr Academy</p>
+            <p class="cert-desc">
+              Completed data analysis and statistical foundations track, developing core intuition for data workflows and analytical reporting.
+            </p>
+          </div>
+        </div>
+
+        <div class="cert-card">
+          <div class="cert-icon"><i class="fas fa-microphone-alt"></i></div>
+          <div>
+            <p class="cert-title">Industry Conferences & Exhibitions</p>
+            <p class="cert-issuer">LEAP & Biban Attendee</p>
+            <p class="cert-desc">
+              Active attendee at flagship global and regional tech exhibitions including <strong>LEAP</strong> and <strong>Biban</strong>, networking with tech leaders and exploring next-gen solutions.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       EDUCATION
+  ============================================================ -->
+  <section id="education">
+    <div class="container">
+      <div class="fade-up">
+        <p class="section-label">06. Education</p>
+        <h2 class="section-title">Academic Background</h2>
+      </div>
+      <div class="edu-card fade-up">
+        <div class="edu-icon">🎓</div>
+        <div>
+          <p class="edu-degree">Bachelor of Science in Computer Science (Third Year)</p>
+          <p class="edu-inst">Imam Mohammad Ibn Saud Islamic University &mdash; Riyadh, Saudi Arabia</p>
+          <div class="edu-badge-group">
+            <span class="edu-badge">Expected Graduation: 2027</span>
+            <span class="edu-badge">Third Year Student</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT
+  ============================================================ -->
+  <section id="contact">
+    <div class="container">
+      <div class="fade-up">
+        <p class="section-label" style="justify-content:center;">07. Contact</p>
+        <h2 class="section-title" style="text-align:center;">Let's Connect</h2>
+        <p class="section-sub" style="margin:0 auto; text-align:center;">
+          I'm always interested in software engineering opportunities, hackathons, and technical discussions.
+        </p>
+      </div>
+      <div class="contact-wrapper fade-up">
+        <p style="color:var(--muted);font-size:0.95rem;line-height:1.8;">
+          Feel free to reach out via email, phone, or LinkedIn.
+        </p>
+        <br />
+        <a href="mailto:mo3.red1995@gmail.com" class="contact-email">
+          <i class="fas fa-envelope"></i> &nbsp;mo3.red1995@gmail.com
+        </a>
+        <br />
+        <a href="resume.pdf" download class="btn btn-primary" style="display:inline-flex; margin-top:10px;">
+          <i class="fas fa-file-pdf"></i> Download Official Resume (PDF)
+        </a>
+        <div class="contact-socials">
+          <a href="https://github.com/B2K-MOATH1995" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="https://linkedin.com/in/moath-aldalati" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="mailto:mo3.red1995@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+          <a href="tel:+966562702645" aria-label="Phone"><i class="fas fa-phone"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer>
+    <p>Designed & Built by <strong>Moath Aldalati</strong> &mdash; 2026</p>
+    <p style="margin-top:8px;font-size:0.78rem;color:#4a5070;">
+      <a href="https://github.com/B2K-MOATH1995" target="_blank" style="color:inherit;text-decoration:none;">GitHub</a> &nbsp;·&nbsp;
+      <a href="https://linkedin.com/in/moath-aldalati" target="_blank" style="color:inherit;text-decoration:none;">LinkedIn</a> &nbsp;·&nbsp;
+      <a href="tel:+966562702645" style="color:inherit;text-decoration:none;">+966 56 270 2645</a>
+    </p>
+  </footer>
+
+  <!-- ============================================================
+       JS
+  ============================================================ -->
+  <script>
+    /* ---------- Navbar scroll ---------- */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    /* ---------- Hamburger ---------- */
+    const hamburger = document.getElementById('hamburger');
+    const navLinks  = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    /* ---------- Typing animation ---------- */
+    const phrases = [
+      '.NET & C# Developer',
+      'Multi-Tier Architecture Enthusiast',
+      '2nd Place @ Algo Arena Contest',
+      'CS Student @ IMSIU (Class of 2027)',
+      'Tech Committee Leader @ RRC'
+    ];
+    let phraseIdx = 0, charIdx = 0, deleting = false;
+    const typedEl = document.getElementById('typed');
+
+    function type() {
+      const phrase = phrases[phraseIdx];
+      if (!deleting) {
+        typedEl.textContent = phrase.slice(0, ++charIdx);
+        if (charIdx === phrase.length) {
+          deleting = true;
+          setTimeout(type, 2000);
+          return;
+        }
+      } else {
+        typedEl.textContent = phrase.slice(0, --charIdx);
+        if (charIdx === 0) {
+          deleting = false;
+          phraseIdx = (phraseIdx + 1) % phrases.length;
+        }
+      }
+      setTimeout(type, deleting ? 50 : 80);
+    }
+    type();
+
+    /* ---------- Intersection Observer (fade-up) ---------- */
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          e.target.querySelectorAll('.fade-up').forEach((child, i) => {
+            setTimeout(() => child.classList.add('visible'), i * 110);
+          });
+        }
+      }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
