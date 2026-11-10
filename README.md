@@ -1,4 +1,6 @@
 # Moath Aldalati — Portfolio
+🌐 **Live Portfolio:** https://b2k-moath1995.github.io/interactive-portfolio/
+ 
 
 A sleek, dark-themed developer portfolio built with plain **HTML + CSS + JS** — no frameworks, no dependencies to install.
 
